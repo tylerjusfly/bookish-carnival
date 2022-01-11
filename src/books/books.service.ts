@@ -1,43 +1,35 @@
-import { Injectable, HttpException } from '@nestjs/common';
-import {BOOKS} from '../mocks/books.mock'
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
+import { bookInterface } from 'src/staticStore/interfaces/book.interface';
+import { CreateBookDTO } from 'src/staticStore/dto/create-book.dto';
+
+
 
 @Injectable()
 export class BooksService {
-  books = BOOKS
+  constructor(@InjectModel('bookSchema') private readonly bookModel : Model<bookInterface>) {}
 
-  async getbooks() :Promise<any[]> {
-    return this.books
+  async createBook(CreateBookDTO : CreateBookDTO) :Promise<bookInterface> {
+    const newbook = new this.bookModel(CreateBookDTO);
+    return await newbook.save()
   }
 
-  getbook(bookID : number) :Promise<any> {
-    let id = Number(bookID)
-    return new Promise( resolve => {
-      const book = this.books.find(book => book.id === id);
-      if(!book){
-        throw new HttpException('Book does not exist!', 404);
+  async findOne(bookId : number) :Promise<bookInterface> {
+    const books = await this.bookModel.findById(bookId).exec()
+    return books
+  }
+
+  async findAll() : Promise<bookInterface[]> {
+      const books = await this.bookModel.find().exec()
+      if(books){
+        throw new NotFoundException("No Books Has Been Written Yet At This Time.")
       }
-      resolve(book)
-
-    });
+      return books;
   }
 
-  addbook(book : any) : Promise<any> {
-    return new Promise(resolve => {
-      this.books.push(book)
-      resolve(this.books)
+  async delete(bookId : number) : Promise<bookInterface> {
+    return await this.bookModel.findByIdAndDelete(bookId)
 
-    });
-  }
-
-  delete(bookID : number) : Promise<any> {
-    let id = Number(bookID)
-    return new Promise( resolve => {
-      let index = this.books.findIndex( book => book.id === id);
-      if (index === -1){
-        throw new HttpException('Book does not exist', 404)
-      }
-      this.books.splice(1, index);
-      resolve(this.books);
-    })
   }
 }
