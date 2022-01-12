@@ -22,7 +22,7 @@ export class BooksService {
 
   async findAll() : Promise<bookInterface[]> {
       const books = await this.bookModel.find().exec()
-      if(books){
+      if(!books){
         throw new NotFoundException("No Books Has Been Written Yet At This Time.")
       }
       return books;
