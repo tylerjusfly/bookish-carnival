@@ -29,6 +29,7 @@
     "@nestjs/platform-express": "^8.0.0",
     "@types/passport-local": "^1.0.34",
     "dotenv": "^11.0.0",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.1.5",
     "passport": "^0.5.2",
     "passport-local": "^1.0.0",

@@ -3,6 +3,7 @@ import { BooksService } from './books.service';
 import { bookInterface } from 'src/staticStore/interfaces/book.interface';
 import { CreateBookDTO } from 'src/staticStore/dto/create-book.dto';
 import { ValidateObjectId } from 'src/staticStore/shared/pipes/validate-object-id.pipes';
+import { BookDocument } from 'src/staticStore/schemas/book.schema';
 
 @Controller('books')
 export class BooksController {
@@ -20,14 +21,12 @@ export class BooksController {
   @Get()
   async findbooks(@Res() res) : Promise<bookInterface[]>{
    const books = await this.BookService.findAll()
-  //  if(!books ){
-  //    throw new NotFoundException("No Books Has Been Written Yet At This Time.")
-  //  }
+  
      return res.status(HttpStatus.OK).json(books)
   }
 
   @Get(':id')
-  async findOne(@Res() res, @Param('id', new ValidateObjectId()) id : number) : Promise<bookInterface> {
+  async findOne(@Res() res, @Param('id', new ValidateObjectId()) id : number) : Promise<BookDocument> {
     const book = await this.BookService.findOne(id)
     if(!book){
       return res.status(HttpStatus.NOT_FOUND).json("this Book does not exist")

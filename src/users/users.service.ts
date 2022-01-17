@@ -3,13 +3,15 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { userInterface } from 'src/staticStore/interfaces/user.interface';
 import { CreateUserDTO } from 'src/staticStore/dto/create-user.dto';
+import {User, UserDocument} from 'src/staticStore/schemas/user.schema'
 
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel('userSchema') private usersModel : Model<userInterface> ){}
+  constructor(@InjectModel(User.name) private usersModel : Model<UserDocument> ){}
   
   async createUser(CreateUserDTO : CreateUserDTO){
+    // this is eqivalent to const username = CreateUserDTO.email
     const {username} = CreateUserDTO
     const user = await this.usersModel.findOne({username})
     if(user){ throw new HttpException("user Already Exists", HttpStatus.BAD_REQUEST);}
@@ -18,7 +20,7 @@ export class UsersService {
 
   }
 
-  async findOne(username : String) : Promise <userInterface | undefined>{
+  async findOne(username : String) : Promise <UserDocument | undefined>{
     return this.usersModel.findOne({username})
   }
 }
