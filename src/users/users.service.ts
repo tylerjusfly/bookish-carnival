@@ -1,25 +1,27 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { userInterface } from 'src/staticStore/interfaces/user.interface';
 import { CreateUserDTO } from 'src/staticStore/dto/create-user.dto';
 import {User, UserDocument} from 'src/staticStore/schemas/user.schema'
+import * as bcrypt from 'bcrypt'
 
 
 @Injectable()
 export class UsersService {
   constructor(@InjectModel(User.name) private usersModel : Model<UserDocument> ){}
   
-  async createUser(CreateUserDTO : CreateUserDTO){
+  async createUser(DTO : CreateUserDTO){
     // this is eqivalent to const username = CreateUserDTO.email
-    const {username} = CreateUserDTO
+    const {username} = DTO
     const user = await this.usersModel.findOne({username})
     if(user){ throw new HttpException("user Already Exists", HttpStatus.BAD_REQUEST);}
-    const createdUser = new this.usersModel(CreateUserDTO)
+    const createdUser = new this.usersModel(DTO, await bcrypt.hashSync(DTO.password, 10))
+
     return await createdUser.save()
 
   }
 
+  // function for finding username in DB
   async findOne(username : String) : Promise <UserDocument | undefined>{
     return this.usersModel.findOne({username})
   }

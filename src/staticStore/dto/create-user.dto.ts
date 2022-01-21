@@ -1,5 +1,5 @@
 export class CreateUserDTO {
-  readonly name : String;
-  readonly username: String;
-  readonly password : String;
+  readonly name : string;
+  readonly username: string;
+  readonly password : string;
 }
