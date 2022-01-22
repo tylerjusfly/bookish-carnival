@@ -1,4 +1,4 @@
-runtime: 4.18.0
+runtime: nodejs14
 
 env_variables:
   DB_Username: "momoh"
