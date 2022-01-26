@@ -15,15 +15,19 @@ export class UsersService {
     const {username} = DTO
     const user = await this.usersModel.findOne({username})
     if(user){ throw new HttpException("user Already Exists", HttpStatus.BAD_REQUEST);}
-    const createdUser = new this.usersModel(DTO, await bcrypt.hashSync(DTO.password, 10))
+    const createdUser = new this.usersModel(DTO, bcrypt.hashSync(DTO.password, 10))
 
     return await createdUser.save()
 
   }
 
   // function for finding username in DB
-  async findOne(username : String) : Promise <UserDocument | undefined>{
-    return this.usersModel.findOne({username})
+  async findOne(username : String) : Promise <any>{
+    return await this.usersModel.findOne({username})
+  }
+
+  async findById(id :any) : Promise<any>{
+    return await this.usersModel.findById(id)
   }
 }
 

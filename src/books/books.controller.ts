@@ -1,9 +1,10 @@
-import { Controller, Get, Param, Delete, HttpException, Post, Body, Res, HttpStatus, NotFoundException, Put, UseGuards} from '@nestjs/common';
+import { Controller, Get, Param, Delete, HttpException, Post, Body, Res, Req, HttpStatus, NotFoundException, Put, UseGuards} from '@nestjs/common';
 import { BooksService } from './books.service';
 import { CreateBookDTO } from 'src/staticStore/dto/create-book.dto';
 import { ValidateObjectId } from 'src/staticStore/shared/pipes/validate-object-id.pipes';
 import { BookDocument } from 'src/staticStore/schemas/book.schema';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { Usr } from 'src/users/user.decorator';
 
 @Controller('books')
 export class BooksController {
@@ -11,8 +12,9 @@ export class BooksController {
 
   @UseGuards(JwtAuthGuard)
   @Post('/write')
-  async createBook(@Res() res, @Body() CreateBookDTO : CreateBookDTO)  {
-    const newBook = await this.BookService.createBook(CreateBookDTO)
+  async createBook(@Usr() user: any, @Res() res, @Body() CreateBookDTO : CreateBookDTO)  {
+    
+    const newBook = await this.BookService.createBook(CreateBookDTO, user.userId)
     return res.status(HttpStatus.OK).json({
       message : 'Your book has successfully been published!',
       book : newBook

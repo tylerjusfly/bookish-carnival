@@ -3,15 +3,26 @@ import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { CreateBookDTO } from 'src/staticStore/dto/create-book.dto';
 import {Book, BookDocument} from 'src/staticStore/schemas/book.schema'
+import { UsersService } from 'src/users/users.service';
 
 
 
 @Injectable()
 export class BooksService {
-  constructor(@InjectModel(Book.name) private readonly bookModel : Model<BookDocument>) {}
+  constructor(
+    @InjectModel(Book.name) private readonly bookModel : Model<BookDocument>,
+    private readonly userService : UsersService
+  ) {}
 
-  async createBook(CreateBookDTO : CreateBookDTO) :Promise<BookDocument> {
-    const newbook = new this.bookModel(CreateBookDTO);
+  async createBook(DTO : CreateBookDTO, userid: string) {
+    const user = await this.userService.findById(userid)
+    if (!user) throw new NotFoundException('Account with given ID not found');
+    const newbook = new this.bookModel();
+    newbook.title = DTO.title;
+    newbook.body = DTO.body;
+    newbook.author = user;
+    newbook.status = DTO.status
+    newbook.datePosted = DTO.datePosted
     return await newbook.save()
   }
 

@@ -1,6 +1,9 @@
+import { Category } from "../schemas/book.schema";
+
+
 export class CreateBookDTO {
-  readonly title : String;
-  readonly body : String;
-  readonly author : String;
-  readonly datePosted : String;
+  readonly title : string;
+  readonly body : string;
+  readonly status : Category
+  readonly datePosted : string;
 }

@@ -23,6 +23,6 @@ export class AuthService {
   // creating json web token
   async login(user :any){
     const payload = { username : user.username, sub : user._id}
-    return { acessToken : this.jwtService.sign(payload)}
+    return { user, acessToken : this.jwtService.sign(payload)}
   }
 }

@@ -1,13 +1,13 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose"
 import {Document, Schema as MSchema} from 'mongoose'
-import { User } from "./user.schema";
+import { User, } from "./user.schema";
 
-enum Category {
+export enum Category {
   soldout = 'soldout',
   available = 'available'
 }
 
-export type BookDocument = Book & Document
+export type BookDocument = Document & Book
 
 @Schema()
 export class Book {
